@@ -1,46 +1,62 @@
 namespace :i18n_timezones do
-  desc "Lookup for missing translations of time zones in locale of country it is located." \
-       "Set locales via I18N_LOCALES=[ru, en, se] to override I18n.available_locales.\n " \
-       "Usage example: `$ rake i18n_timezones:lookup_missing_translations[csv] I18N_LOCALES=[ru]`"
+  require 'active_support/all'
+
+  desc 'Lookup for missing translations of time zones.' \
+       'Usage example: `$ rake i18n_timezones:lookup_missing_translations`'
   task lookup_missing_translations: :i18n_setup do
-    require 'countries'
-    require 'active_support/all'
 
     supported_locales = I18n.available_locales
     puts "looking for locales: #{supported_locales.join ', '}"
-    ISO3166::Country.all.each do |country|
-      locales = country.languages_spoken.map(&:to_sym) & supported_locales
-      next unless locales.present?
-      timezones = TZInfo::Country.get(country.alpha2).zones
-
-      timezones.each do |tzinfo|
-        city = tzinfo.name[%r{[^/]+\z}]
-        locales.each do |locale|
-          begin
-            I18n.locale = locale
-            I18n.t(city, scope: :timezones, raise: true, separator: "\001")
-          rescue I18n::MissingTranslationData => e
-            puts "#{e.message} (#{country.name}) (+#{tzinfo.current_period.offset.utc_offset / 3600.0})"
-          end
-        end
+    ActiveSupport::TimeZone.all.each do |zone|
+      supported_locales.each do |locale|
+        I18n.locale = locale
+        I18n.t(zone.name, scope: :timezones, raise: true, separator: '\001')
+      rescue I18n::MissingTranslationData => e
+        puts "#{e.message} (\"#{zone.name}\": \"\" # " \
+             "#{zone.tzinfo.identifier}; GMT#{zone.formatted_offset})"
       end
     end
   end
 
-  desc "Setup I18n for this gem"
+  desc 'Setup I18n for this gem'
   task :i18n_setup do
     require 'i18n'
 
-    Dir.chdir(File.expand_path('../../../../rails/locale', __FILE__)) do
+    Dir.chdir(File.expand_path('../../../rails/locale', __dir__)) do
+      I18n.enforce_available_locales = false
       config = I18n.config
-      config.available_locales =
-        if (locales_string = ENV['I18N_LOCALES'])
-          locales_string[/(?<=\[).+(?=\])/].split(/[\s,]+/)
-        else
-          Dir['*.yml'].map { |x| x[/.+(?=.yml)/] } - %w[en]
-        end
-      config.default_locale = config.available_locales.first
+      config.available_locales = Dir['*.yml'].map { |x| x[/.+(?=.yml)/] } - %w[en]
+      # config.default_locale = config.available_locales.first
       config.load_path = Dir['*.yml'].map { |x| File.join(Dir.pwd, x) }
+    end
+  end
+
+  desc 'Puts content for localization .yml file for given locale with #TODOs ' \
+       'if translation missing. Uses translations included in existing file.' \
+       'Usage example: `$ rake i18n_timezones:prepare_yaml[pl]`'
+  task :prepare_yaml, [:locale, :description] do |_, args|
+    I18n.locale = args[:locale]
+    # I18n.enforce_available_locales = false
+    # puts I18n.available_locales
+    puts "#{I18n.locale}:", '  timezones:'
+    ActiveSupport::TimeZone.all.each do |zone|
+      t = I18n.t(zone.name, scope: :timezones, raise: true, separator: '\001')
+      row = "    \"#{zone.name}\": \"#{t}\""
+      if args[:description] == true
+        row.concat(" # #{zone.tzinfo.identifier} GMT#{zone.formatted_offset}")
+      end
+      puts row
+    rescue I18n::MissingTranslationData => e
+      puts "    #TODO: #{e.message}; \"#{zone.name}\": \"\" # " \
+           "#{zone.tzinfo.identifier} GMT#{zone.formatted_offset}"
+    end
+  end
+  task prepare_yaml: :i18n_setup
+
+  desc 'Show timezones in alphabetical order'
+  task :show_timezones_alphabetical do
+    ActiveSupport::TimeZone.all.map(&:name).sort.each do |zone|
+      puts zone
     end
   end
 end

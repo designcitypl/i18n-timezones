@@ -1,3 +1,7 @@
+## 1.5
+- Updating dependecies.
+- Adding rake task which can find missing translations based on https://github.com/umbrellio/i18n-timezones/tree/lookup_missing_translations
+
 ## 1.4.7
 
 - Updating dependencies. Fixing Ulaanbaatar and Kyiv translation names, typo in Russian translation of "Solomon Is.", some zh-CN translations.

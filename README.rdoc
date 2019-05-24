@@ -28,5 +28,15 @@ or just
 
 If you find an error in a translation, please let us know. Please help us fill in the rest of the timezones.
 
+== Development
+
+Rake task which can find missing translations
+
+  i18n_timezones:lookup_missing_translations
+
+Rake task to display template yaml file with all timezone keys for given locale
+
+  i18n_timezones:prepare_yaml[pl]
+
 == License
 MIT or GPL
