@@ -1,9 +1,12 @@
 $LOAD_PATH.push File.expand_path('lib', __dir__)
 
+# Maintain your gem's version:
+require 'i18n_timezones/version'
+
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
   s.name        = 'i18n-timezones'
-  s.version     = '1.5'
+  s.version     = I18nTimezones::VERSION
   s.authors     = ['Brian McQuay']
   s.email       = ['brian@onomojo.com']
   s.homepage    = 'https://github.com/onomojo/i18n-timezones'

@@ -10,7 +10,7 @@ require 'rake'
 require 'rake/testtask'
 require 'rbconfig'
 
-task :test => 'test:all'
+task test: 'test:all'
 
 require 'rspec/core'
 require 'rspec/core/rake_task'
@@ -18,11 +18,11 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
 end
 
-RSpec::Core::RakeTask.new("spec:unit") do |spec|
+RSpec::Core::RakeTask.new('spec:unit') do |spec|
   spec.pattern = 'spec/unit/**/*_spec.rb'
 end
 
-RSpec::Core::RakeTask.new("spec:integration") do |spec|
+RSpec::Core::RakeTask.new('spec:integration') do |spec|
   spec.pattern = 'spec/integration/**/*_spec.rb'
 end
 
@@ -33,4 +33,4 @@ end
 
 Dir.glob('lib/tasks/*.rake').each { |r| import r }
 
-task :default => :spec
+task default: :spec

@@ -4,7 +4,6 @@ namespace :i18n_timezones do
   desc 'Lookup for missing translations of time zones.' \
        'Usage example: `$ rake i18n_timezones:lookup_missing_translations`'
   task lookup_missing_translations: :i18n_setup do
-
     supported_locales = I18n.available_locales
     puts "looking for locales: #{supported_locales.join ', '}"
     ActiveSupport::TimeZone.all.each do |zone|
@@ -26,7 +25,6 @@ namespace :i18n_timezones do
       I18n.enforce_available_locales = false
       config = I18n.config
       config.available_locales = Dir['*.yml'].map { |x| x[/.+(?=.yml)/] } - %w[en]
-      # config.default_locale = config.available_locales.first
       config.load_path = Dir['*.yml'].map { |x| File.join(Dir.pwd, x) }
     end
   end
@@ -36,8 +34,6 @@ namespace :i18n_timezones do
        'Usage example: `$ rake i18n_timezones:prepare_yaml[pl]`'
   task :prepare_yaml, [:locale, :description] do |_, args|
     I18n.locale = args[:locale]
-    # I18n.enforce_available_locales = false
-    # puts I18n.available_locales
     puts "#{I18n.locale}:", '  timezones:'
     ActiveSupport::TimeZone.all.each do |zone|
       t = I18n.t(zone.name, scope: :timezones, raise: true, separator: '\001')
