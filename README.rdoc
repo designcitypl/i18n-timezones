@@ -34,9 +34,9 @@ Rake task which can find missing translations
 
   i18n_timezones:lookup_missing_translations
 
-Rake task to display template yaml file with all timezone keys for given locale
+Rake task to display template yaml file with all timezone keys for given locale. It needs locale as main argument and optional <i>description</i> flag, which adds tzinfo's identifier and formatted_offset as a comment to each timezone key.
 
-  i18n_timezones:prepare_yaml[pl]
+  i18n_timezones:prepare_yaml[<i>locale</i>, <i>description=nil</i>]
 
 == License
 MIT or GPL
