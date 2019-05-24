@@ -36,7 +36,7 @@ Rake task which can find missing translations
 
 Rake task to display template yaml file with all timezone keys for given locale. It needs locale as main argument and optional <i>description</i> flag, which adds tzinfo's identifier and formatted_offset as a comment to each timezone key.
 
-  i18n_timezones:prepare_yaml[<i>locale</i>, <i>description=nil</i>]
+  i18n_timezones:prepare_yaml[locale, description=nil]
 
 == License
 MIT or GPL
