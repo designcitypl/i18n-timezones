@@ -57,6 +57,7 @@ GEM
       concurrent-ruby (~> 1.0)
     i18n-spec (0.6.0)
       iso
+    i18n_data (0.7.0)
     iso (0.2.2)
       i18n
     loofah (2.1.1)
