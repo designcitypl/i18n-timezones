@@ -2,6 +2,10 @@ require 'rails'
 
 module I18nTimezones
   class Railtie < ::Rails::Railtie #:nodoc:
+    rake_tasks do
+      load 'tasks/i18n_timezones/missing_translations.rake'
+    end
+
     initializer 'i18n-timezones' do |app|
       I18nTimezones::Railtie.instance_eval do
         pattern = pattern_from app.config.i18n.available_locales
